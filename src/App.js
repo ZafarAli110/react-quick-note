@@ -8,7 +8,8 @@ import './App.css';
 function App() {
   const initialState = [];
   const [state, setState] = useState(initialState);
-  const updateState = newNote => {
+
+  const saveNote = newNote => {
     const nextState = [
       ...state,
       newNote
@@ -19,7 +20,7 @@ function App() {
     <>
       <NavBar />
       <div className='full-height grayBg padding-16 mt-20'>
-        <AddNote state={state} updateState={updateState} />
+        <AddNote state={state} saveNote={saveNote} />
         <div className='grid-col-3'>
           <NotesList data={state} />
         </div>

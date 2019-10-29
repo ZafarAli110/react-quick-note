@@ -13,6 +13,11 @@
   border: 0.5px solid lightgray;
 }
 
+.error-note{
+  font-size: 10px;
+  color: #d9534f;
+}
+
 .grayBg{
     background-color: #f3f3f4;
 }

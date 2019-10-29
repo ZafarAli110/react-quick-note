@@ -11,7 +11,7 @@ export default function NotesList({ data }) {
       </div>
       <div className='padding-10 flex-grow'>
         <p className='font-standard no-margin break-word'>
-          {note.text}
+          {note.body}
         </p>
       </div>
       <div className='grid-col-2 text-center border-top'>
