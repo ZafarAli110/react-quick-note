@@ -1,62 +1,70 @@
 import React from 'react';
+import uuid from 'uuid';
 import './styles.css';
 
 class AddNote extends React.Component {
+  constructor(props) {
+    super(props);
+    const id = this.props.match.params.id;
+    if (id) {
+      this.noteToBeEdit = this.props.state.find(note => note.id == id); ;
+    }
+    this.state = {
+      title:  this.noteToBeEdit ? this.noteToBeEdit.title : '',
+      body: this.noteToBeEdit ? this.noteToBeEdit.body : '',
+      errors: {}
+    };
+  }
+  resetState = () => this.setState({title : '' , body:'' , errors:{}});
+  and = (x) => (...y) => y.reduce((acc, val) => acc && val, x);
+  setError = field => msg => this.setState({ errors: { [field]: msg } });
+  setTitleError = this.setError('title');
+  setBodyError = this.setError('body');
 
-  constructor(prop) {
-    super(prop);
+  validateForm = (title, body ) => {
+    if (!title) {
+      this.setTitleError('*title is required.');
+      return false;
+    }
+    if (!body) {
+      this.setBodyError('*note content is required.');
+      return false;
+    }
+    return true;
   }
 
-  state = {
-    title: '',
-    body: '',
-    errors: null
-  };
-
-  resetState = () => this.setState({title : '' , body:'' , errors:null});
-
   handleChange = e => {
+    const { name, value } = e.target;
+    const { errors, title, body } = this.state;
     this.setState({
-      [e.target.name] : e.target.value
+      [name]: value,
+      ...(this.and(title)(errors.title) && { errors: { title: null } }),
+      ...(this.and(body)(errors.body) && { errors: { body: null } }),
     });
-
-    if (this.state.errors.title) {
-      this.setState({ errors: { title : null } });
-    }
-
-    if (this.state.errors.body) {
-      this.setState({ errors: { body : null } });
-    }
   }
 
   handleSubmit = (e) => {
     e.preventDefault();
     const { title, body } = this.state;
-
-    if (!title) {
-      this.setState({ errors: { title: '*title is required.' } });
+    if (!this.validateForm(title, body)) {
       return;
     }
-
-    if (!body) {
-      this.setState({ errors: { body: '*note content is required.' } });
-      return;
-    }
-
     const newNote = {
-      id: new Date(),
+      id: this.noteToBeEdit ? this.noteToBeEdit.id : uuid(),
       title: title ,
       body: body
     };
-    this.props.saveNote(newNote);
+    this.noteToBeEdit ? this.props.editNote(newNote) : this.props.saveNote(newNote);
+    this.props.history.push("/allnotes");
     this.resetState();
   };
 
   render() {
-    const { title, body , errors } = this.state;
+    const { title, body, errors } = this.state;
+    const action = this.noteToBeEdit ? 'Edit' : 'Add';
     return (
-      <form onSubmit={this.handleSubmit}>
-        <h3 className='blackish-blue'>Add a note</h3>
+      <form onSubmit={this.handleSubmit} className='mt-40'>
+        <h3 className='blackish-blue'>{action} a note</h3>
         <div className='flex-column'>
           <label className='label-bold font-standard'>
             Note Title
@@ -68,7 +76,7 @@ class AddNote extends React.Component {
             name='title'
             value={title}
             onChange={this.handleChange}></input>
-          {(errors && errors.title) && <span className='error-note'>{errors.title}</span>}
+          { this.and(errors)(errors.title) && <span className='error-note'>{errors.title}</span>}
           <label className='marginTop-20 label-bold font-standard'>
             Note Content
           </label>
@@ -79,10 +87,10 @@ class AddNote extends React.Component {
             name='body'
             value={body}
             onChange={this.handleChange}></textarea>
-          {(errors && errors.body) && <span className='error-note'>{errors.body}</span>}
+          { this.and(errors)(errors.body) && <span className='error-note'>{errors.body}</span>}
 
           <button type="submit" className='marginTop-10 btn btn-small'>
-            <span>Add note</span>
+            <span>{action} note</span>
           </button>
         </div>
       </form>

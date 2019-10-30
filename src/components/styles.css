@@ -102,12 +102,24 @@
   font-size: 0.9em;
 }
 
+.fs-pt8em{
+  font-size: 0.8em;
+}
+
 .color-white{
   color: white;
 }
 
 .mt-20{
   margin-top: 20px;
+}
+
+.mt-40{
+  margin-top: 40px;
+}
+
+.mb-0{
+  margin-bottom: 0px;
 }
 
 .border-top{
@@ -138,10 +150,12 @@ input:focus{
     border-color: #387ef5;
     outline: none;
 }
+
 textarea:focus{
     border-color: #387ef5;
     outline: none;
 }
+
 .no-margin{
     margin: 0px;
 }
@@ -160,6 +174,7 @@ textarea:focus{
 .break-word{
     word-wrap: break-word;
 }
+
 .btn-link{
     background: transparent;
     border: none;
