@@ -1,6 +1,9 @@
 import React from 'react';
 import uuid from 'uuid';
 import classnames from 'classnames';
+import { and } from '../utils/helpers';
+import TextInputGroup from '../components/TextInputGroup';
+
 import '../styles/box-sizing.css';
 import '../styles/typography.css';
 import '../styles/forms-util.css';
@@ -20,7 +23,6 @@ class CreateNoteUsingClass extends React.Component {
     };
   }
   resetState = () => this.setState({title : '' , body:'' , errors:{}});
-  and = (x) => (...y) => y.reduce((acc, val) => acc && val, x);
   setError = field => msg => this.setState({ errors: { [field]: msg } });
   setTitleError = this.setError('title');
   setBodyError = this.setError('body');
@@ -28,6 +30,10 @@ class CreateNoteUsingClass extends React.Component {
   validateForm = (title, body ) => {
     if (!title) {
       this.setTitleError('*title is required.');
+      return false;
+    }
+    if (title.length > 50) {
+      this.setTitleError('*title should not be greater than 50 characters.');
       return false;
     }
     if (!body) {
@@ -40,11 +46,14 @@ class CreateNoteUsingClass extends React.Component {
   handleChange = e => {
     const { name, value } = e.target;
     const { errors } = this.state;
-    const isTitleValid = this.and(name === 'title')(errors.title,value);
-    const isBodyValid = this.and(name === 'body')(errors.body,value);
+    const isTitleValid = and(name === 'title')(errors.title, errors.title === '*title is required.', !!value);
+    const isTitleLengthValid = and(name === 'title')(errors.title, errors.title === '*title should not be greater than 50 characters.', value.length <= 50);
+    const isBodyValid = and(name === 'body')(errors.body,value);
     this.setState({
       [name]: value,
+      errors: {...errors},
       ...(isTitleValid && { errors: { title: null } }),
+      ...(isTitleLengthValid && { errors: { title: null } }),
       ...(isBodyValid && { errors: { body: null } }),
     });
   }
@@ -67,58 +76,39 @@ class CreateNoteUsingClass extends React.Component {
 
   render() {
     const { title, body, errors } = this.state;
-    const action = this.noteToBeEdit ? 'Edit' : 'Add';
-    const titleError = this.and(errors)(errors.title) && (
-      <span className='fs-10 color-danger'>
-        {errors.title}
-      </span>);
-    const bodyError = this.and(errors)(errors.body) && (
-      <span className='fs-10 color-danger'>
-        {errors.body}
-      </span>);
+    const actionType = this.noteToBeEdit ? 'Edit' : 'Add';
+    const invalidTitleClass = classnames({'invalid-input': errors.title,'gray-border': !errors.title});
+    const invalidContentClass = classnames({'invalid-input': errors.body,'gray-border': !errors.body});
 
     return (
       <form onSubmit={this.handleSubmit} className='mt-40'>
-        <h3 className='color-blackishBlue'>{action} a note</h3>
-        <div className='flex-col'>
-          <label className='font-bold fs-12'>
-            Note Title
-        </label>
-          <input
-            className={classnames('width-80', 'fs-12', 'mt-10','pd-5',
-              {
-                'invalid-input': titleError,
-                'gray-border': !titleError
-              }
-            )}
-            placeholder='Note title'
-            type='text'
-            name='title'
-            value={title}
-            onChange={this.handleChange}></input>
-            { titleError }
-          <label className='mt-20 font-bold fs-12'>
-            Note Content
-          </label>
-          <textarea
-            className={classnames('width-80', 'fs-12', 'minHeight-150', 'mt-10','pd-5',
-              {
-                'invalid-input': bodyError,
-                'gray-border': !bodyError
-              }
-            )}
-            placeholder='Note description'
-            type='text'
-            name='body'
-            value={body}
-            onChange={this.handleChange}></textarea>
-            { bodyError}
+      <div className='flex-col'>
+        <h3 className='color-blackishBlue mb-0'>{actionType} a note</h3>
+        <TextInputGroup labelTitle=' Note Title'
+          TagName='input'
+          placeholder='Note title'
+          name='title'
+          value={title}
+          onChange={this.handleChange}
+          type='text'
+          error={errors.title}
+          className={"width-80 fs-12 mt-10 pd-5 " + invalidTitleClass}/>
 
-          <button type="submit" className='mt-10 btn btn-small'>
-            <span>{action} note</span>
-          </button>
-        </div>
-      </form>
+        <TextInputGroup labelTitle='Note Content'
+          TagName='textarea'
+          placeholder='Note description'
+          name='body'
+          value={body}
+          onChange={this.handleChange}
+          type='text'
+          error={errors.body}
+          className={"width-80 fs-12 minHeight-150 mt-10 pd-5 " + invalidContentClass}/>
+
+        <button type="submit" className='mt-10 btn btn-small'>
+          <span>{actionType} note</span>
+        </button>
+      </div>
+    </form>
     );
   }
 }
