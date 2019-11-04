@@ -1,0 +1,29 @@
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.flex-grow {
+  flex: 1 0 auto;
+}
+
+.flex-spaceBTW {
+  justify-content: space-between;
+}
+
+.grid-col-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.grid-col-3 {
+  display: grid;
+  grid-column-gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(30vw, 1fr));
+}

@@ -1,0 +1,58 @@
+.flat-card {
+  overflow: hidden;
+  position: relative;
+  transition: box-shadow 0.235s ease-in-out;
+  box-shadow: 0 15px 20px rgba(0, 0, 0, 0.08);
+  background: white;
+}
+
+.pos-absolute {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+}
+
+.color-white {
+    color: white;
+}
+
+.color-danger {
+    color: #d9534f;
+}
+
+.color-blackishBlue {
+    color: #1f1a48;
+}
+
+.bgTheme {
+  background: #1f1a48;
+}
+
+.shadow-bottom {
+  box-shadow: 0px 15px 10px -15px black;
+}
+
+.border-top {
+  border-top: 0.5px solid lightgray;
+}
+
+.border-left{
+    border-left: 0.5px solid lightgray;
+}
+
+.border-bottom {
+  border-bottom: 0.5px solid lightgray;
+}
+
+.gray-border {
+    border: 0.5px solid lightgray;
+}
+
+.bgGray{
+    background-color: #f3f3f4;
+}
+
+
+
+

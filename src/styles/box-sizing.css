@@ -1,0 +1,49 @@
+.width-80 {
+  width: 80%;
+  min-width: 80%;
+  max-width: 80%;
+}
+
+.full-height {
+  height: 100vh;
+}
+
+.minHeight-150 {
+  min-height: 150px;
+}
+
+.pd-5 {
+  padding: 5px;
+}
+
+.pd-10 {
+  padding: 10px;
+}
+
+.pd-16 {
+  padding: 16px;
+}
+
+.no-margin{
+    margin: 0px;
+}
+
+.mb-0 {
+  margin-bottom: 0px;
+}
+
+.mt-10 {
+    margin-top: 10px;
+}
+
+.mt-20 {
+    margin-top: 20px;
+}
+
+.mt-40 {
+  margin-top: 40px;
+}
+
+
+
+

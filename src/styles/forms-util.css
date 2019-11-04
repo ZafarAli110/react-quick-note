@@ -1,0 +1,80 @@
+/* Material Button CSS Start ref:-https://codepen.io/sebj54/pen/oxluI?editors=1000*/
+.btn {
+  position: relative;
+  display: block;
+  padding: 0;
+  overflow: hidden;
+  border-width: 0;
+  outline: none;
+  background-color: #1f1a48;
+  color: #ecf0f1;
+  transition: background-color 0.3s;
+  cursor: pointer;
+}
+.btn:hover,
+.btn:focus {
+  background-color: #1f1a48;
+}
+
+.btn > * {
+  position: relative;
+}
+
+.btn span {
+  display: block;
+}
+
+.btn:before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: block;
+  width: 0;
+  padding-top: 0;
+  border-radius: 100%;
+  background-color: rgba(236, 240, 241, 0.3);
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  -o-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+.btn:active:before {
+  width: 120%;
+  padding-top: 120%;
+  transition: width 0.2s ease-out, padding-top 0.2s ease-out;
+}
+
+/* Material Button CSS End  */
+
+input:focus {
+  border-color: #387ef5;
+  outline: none;
+}
+
+textarea:focus {
+  border-color: #387ef5;
+  outline: none;
+}
+
+.invalid-input {
+  border: 0.5px solid #d9534f;
+}
+
+.btn-small {
+  width: 100px;
+  height: 30px;
+}
+
+.btn-link {
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
+.btn-link:active {
+  opacity: 0.5;
+}
