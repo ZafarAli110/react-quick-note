@@ -1,20 +1,22 @@
 import React from 'react';
 import uuid from 'uuid';
 import classnames from 'classnames';
-import { and } from '../utils/helpers';
-import TextInputGroup from '../components/TextInputGroup';
+import { and } from '../../utils/helpers';
+import TextInputGroup from '../../components/TextInputGroup';
+import { addNote, editNote } from '../../redux/actions/noteActions';
+import { connect } from 'react-redux';
 
-import '../styles/box-sizing.css';
-import '../styles/typography.css';
-import '../styles/forms-util.css';
-import '../styles/util.css';
+import '../../styles/box-sizing.css';
+import '../../styles/typography.css';
+import '../../styles/forms-util.css';
+import '../../styles/util.css';
 
-class CreateNoteUsingClass extends React.Component {
+class NoteFormUsingClass extends React.Component {
   constructor(props) {
     super(props);
     const id = this.props.match.params.id;
     if (id) {
-      this.noteToBeEdit = this.props.state.find(note => note.id === id);
+      this.noteToBeEdit = this.props.notes.find(note => note.id === id);
     }
     this.state = {
       title:  this.noteToBeEdit ? this.noteToBeEdit.title : '',
@@ -46,9 +48,9 @@ class CreateNoteUsingClass extends React.Component {
   handleChange = e => {
     const { name, value } = e.target;
     const { errors } = this.state;
-    const isTitleValid = and(name === 'title')(errors.title, errors.title === '*title is required.', !!value);
-    const isTitleLengthValid = and(name === 'title')(errors.title, errors.title === '*title should not be greater than 50 characters.', value.length <= 50);
-    const isBodyValid = and(name === 'body')(errors.body,value);
+    const isTitleValid = and(name === 'title')(errors.title === '*title is required.', !!value);
+    const isTitleLengthValid = and(name === 'title')(errors.title === '*title should not be greater than 50 characters.', value.length <= 50);
+    const isBodyValid = and(name === 'body')(errors.body,!!value);
     this.setState({
       [name]: value,
       errors: {...errors},
@@ -70,7 +72,7 @@ class CreateNoteUsingClass extends React.Component {
       body: body
     };
     this.noteToBeEdit ? this.props.editNote(newNote) : this.props.saveNote(newNote);
-    this.props.history.push("/allnotes");
+    this.props.history.push('/allnotes');
     this.resetState();
   };
 
@@ -79,7 +81,6 @@ class CreateNoteUsingClass extends React.Component {
     const actionType = this.noteToBeEdit ? 'Edit' : 'Add';
     const invalidTitleClass = classnames({'invalid-input': errors.title,'gray-border': !errors.title});
     const invalidContentClass = classnames({'invalid-input': errors.body,'gray-border': !errors.body});
-
     return (
       <form onSubmit={this.handleSubmit} className='mt-40'>
       <div className='flex-col'>
@@ -92,7 +93,7 @@ class CreateNoteUsingClass extends React.Component {
           onChange={this.handleChange}
           type='text'
           error={errors.title}
-          className={"width-80 fs-12 mt-10 pd-5 " + invalidTitleClass}/>
+          className={'width-80 fs-12 mt-10 pd-5 ' + invalidTitleClass}/>
 
         <TextInputGroup labelTitle='Note Content'
           TagName='textarea'
@@ -102,7 +103,7 @@ class CreateNoteUsingClass extends React.Component {
           onChange={this.handleChange}
           type='text'
           error={errors.body}
-          className={"width-80 fs-12 minHeight-150 mt-10 pd-5 " + invalidContentClass}/>
+          className={'width-80 fs-12 minHeight-150 mt-10 pd-5 ' + invalidContentClass}/>
 
         <button type="submit" className='mt-10 btn btn-small'>
           <span>{actionType} note</span>
@@ -112,5 +113,13 @@ class CreateNoteUsingClass extends React.Component {
     );
   }
 }
-
-export default CreateNoteUsingClass;
+const mapStateToProps = state => {
+  return {
+    notes: state.notes
+  };
+};
+const mapDispatchToProps = {
+  saveNote: addNote,
+  editNote : editNote
+};
+export default connect(mapStateToProps,mapDispatchToProps)(NoteFormUsingClass);

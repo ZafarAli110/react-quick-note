@@ -1,24 +1,26 @@
 import { useState, useEffect } from 'react';
 import { conditionally } from '../utils/helpers';
 
-function useForm(initialState, validateForm, successCallback) {
+function useForm(initialState, validateForm, submitFormCallback) {
+  // console.log('useForm');
   const [values, setValues] = useState(initialState);
   const [errors, setErrors] = useState({});
   const [isSubmitting, setSubmitting] = useState(false);
   const noErrors = errorsObj => Object.keys(errorsObj).length === 0;
-  const submitForm = conditionally({
+  const submitWhen = conditionally({
     if: noErrors,
     then: () => {
-      successCallback(values);
+      submitFormCallback(values);
       setSubmitting(false);
     },
     else: () => setSubmitting(false)
   });
 
-  //whenever the errors state changes,the callback fn in useEffect will be call
+  //whenever the errors state changes,the callback fn in useEffect will execute
   useEffect(() => {
-    isSubmitting && submitForm(errors);
-  }, [errors,isSubmitting,submitForm]); //here args are passes as dependencies
+    // console.log('inside useForm effect');
+    isSubmitting && submitWhen(errors);
+  }, [errors]); //here errors is pass as a dependencies
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -35,13 +37,13 @@ function useForm(initialState, validateForm, successCallback) {
     setSubmitting(true);
   }
 
-  return {
+  return [
     handleSubmit,
     handleChange,
     values,
     errors,
     setErrors,
     isSubmitting
-  };
+  ];
 }
 export default useForm;
