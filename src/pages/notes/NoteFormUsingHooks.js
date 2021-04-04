@@ -1,12 +1,13 @@
 import React from 'react';
 import uuid from 'uuid';
 import classnames from 'classnames';
+import { useHistory, useParams } from 'react-router';
+import { useDispatch, useSelector } from 'react-redux';
 import { conditionally, pipe, and, or } from '../../utils/helpers';
 import { validateNoteForm } from '../../utils/form-validations';
 import useForm from '../../custom-hooks/useForm';
 import TextInputGroup from '../../components/TextInputGroup';
 import { addNote, editNote } from '../../redux/actions/noteActions';
-import { connect } from 'react-redux';
 
 import '../../styles/box-sizing.css';
 import '../../styles/typography.css';
@@ -23,18 +24,26 @@ function setInitialState(note) {
   return initialState;
 }
 
-function NoteFormUsingHooks({ notes, match, history, saveNote, editNote }) {
-  // console.log('NoteFormUsingHooks');
-  const noteToBeEdit = notes.find(note => note.id === match.params.id);
+function NoteFormUsingHooks() {
+  const notes = useSelector(state => state.notes);
+  const { id } = useParams();
+
+  const history = useHistory();
+  const dispatch = useDispatch();
+
+  const noteToBeEdit = notes.find(note => note.id === id);
   const navigateToAllNotes = () => history.push('/allNotes');
-  const takeAction = note =>
-    noteToBeEdit ? editNote.call(this, note) : saveNote.call(this, note);
+
+  const action = noteToBeEdit ? editNote : addNote;
+  const takeAction = note => dispatch(action.call(this, note));
+  
   const initialState = setInitialState(noteToBeEdit);
   const submitForm = pipe(
     createNote,
     takeAction,
     navigateToAllNotes
   );
+
   const [
     handleSubmit,
     handleChange,
@@ -58,18 +67,21 @@ function NoteFormUsingHooks({ notes, match, history, saveNote, editNote }) {
     const isTitleValid = and(name === 'title')(title === '*title is required.', !!value);
     const isTitleLengthValid = and(name === 'title')(title === '*title should not be greater than 50 characters.', value.length <= 50);
     const isBodyValid = and(name === 'body')(body, !!value);
+    
     or(isTitleValid)(isTitleLengthValid,isBodyValid) && setErrors({
       ...errors,
       ...(isTitleValid && { title: null }),
       ...(isTitleLengthValid && { title: null }),
       ...(isBodyValid && { body: null }),
     });
+
     return event;
   }
 
   const actionType = noteToBeEdit ? 'Edit' : 'Add';
   const invalidTitleClass = classnames({'invalid-input': errors.title,'gray-border': !errors.title});
   const invalidContentClass = classnames({'invalid-input': errors.body,'gray-border': !errors.body});
+  
   return (
     <form onSubmit={handleSubmit} className='mt-40'>
       <div className='flex-col'>
@@ -102,13 +114,4 @@ function NoteFormUsingHooks({ notes, match, history, saveNote, editNote }) {
   );
 }
 
-const mapStateToProps = state => {
-  return {
-    notes: state.notes
-  };
-};
-const mapDispatchToProps = {
-  saveNote: addNote,
-  editNote : editNote
-};
-export default connect(mapStateToProps,mapDispatchToProps)(NoteFormUsingHooks);
+export default NoteFormUsingHooks;

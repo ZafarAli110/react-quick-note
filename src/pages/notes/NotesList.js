@@ -1,7 +1,8 @@
 import React from 'react';
 import Card from '../../components/Card';
 import { deleteNote } from '../../redux/actions/noteActions';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router';
 
 import '../../styles/box-sizing.css';
 import '../../styles/typography.css';
@@ -9,8 +10,11 @@ import '../../styles/forms-util.css';
 import '../../styles/layout.css';
 import '../../styles/util.css';
 
-function NotesList({ notes, history, deleteNote }) {
-  // console.log('NotesList');
+function NotesList() {
+  const notes = useSelector(state => state.notes);
+  const history = useHistory();
+  const dispatch = useDispatch();
+
   const list = notes.map(note =>
     (
       <Card key={note.id} title={note.title} body={note.body}>
@@ -22,8 +26,8 @@ function NotesList({ notes, history, deleteNote }) {
             </button>
           </div>
           <div className='border-left pd-5'>
-            <button onClick={() => deleteNote(note.id)}
-              className='btn-link fs-pt8em color-blackishBlue'>
+            <button onClick={() => dispatch(deleteNote(note.id))}
+              className='btn-link fs-pt8em color-danger'>
               <span>Delete</span>
             </button>
           </div>
@@ -40,12 +44,4 @@ function NotesList({ notes, history, deleteNote }) {
   );
 }
 
-const mapStateToProps = state => {
-  return {
-    notes : state.notes
-  }
-};
-const mapDispatchToProps = {
-  deleteNote : deleteNote
-};
-export default connect(mapStateToProps,mapDispatchToProps)(NotesList);
+export default NotesList;

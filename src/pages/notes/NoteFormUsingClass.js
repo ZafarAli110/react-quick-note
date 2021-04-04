@@ -24,6 +24,7 @@ class NoteFormUsingClass extends React.Component {
       errors: {}
     };
   }
+
   resetState = () => this.setState({title : '' , body:'' , errors:{}});
   setError = field => msg => this.setState({ errors: { [field]: msg } });
   setTitleError = this.setError('title');
@@ -34,14 +35,17 @@ class NoteFormUsingClass extends React.Component {
       this.setTitleError('*title is required.');
       return false;
     }
+
     if (title.length > 50) {
       this.setTitleError('*title should not be greater than 50 characters.');
       return false;
     }
+
     if (!body) {
       this.setBodyError('*note content is required.');
       return false;
     }
+
     return true;
   }
 
@@ -51,6 +55,7 @@ class NoteFormUsingClass extends React.Component {
     const isTitleValid = and(name === 'title')(errors.title === '*title is required.', !!value);
     const isTitleLengthValid = and(name === 'title')(errors.title === '*title should not be greater than 50 characters.', value.length <= 50);
     const isBodyValid = and(name === 'body')(errors.body,!!value);
+    
     this.setState({
       [name]: value,
       errors: {...errors},
@@ -66,11 +71,13 @@ class NoteFormUsingClass extends React.Component {
     if (!this.validateForm(title, body)) {
       return;
     }
+
     const newNote = {
       id: this.noteToBeEdit ? this.noteToBeEdit.id : uuid(),
       title: title ,
       body: body
     };
+
     this.noteToBeEdit ? this.props.editNote(newNote) : this.props.saveNote(newNote);
     this.props.history.push('/allnotes');
     this.resetState();
@@ -81,6 +88,7 @@ class NoteFormUsingClass extends React.Component {
     const actionType = this.noteToBeEdit ? 'Edit' : 'Add';
     const invalidTitleClass = classnames({'invalid-input': errors.title,'gray-border': !errors.title});
     const invalidContentClass = classnames({'invalid-input': errors.body,'gray-border': !errors.body});
+    
     return (
       <form onSubmit={this.handleSubmit} className='mt-40'>
       <div className='flex-col'>

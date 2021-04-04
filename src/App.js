@@ -10,7 +10,6 @@ import './styles/box-sizing.css';
 import './styles/util.css';
 
 function App() {
-  // console.log('App js');
   return (
     <div className='full-height grayBg pd-16'>
       <Router>
