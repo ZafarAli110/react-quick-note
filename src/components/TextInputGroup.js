@@ -24,7 +24,7 @@ function TextInputGroup({
                 type={type}
                 name={name}
                 value={value}
-                onChange={onChange}></TagName>
+                onChange={onChange}/>
             {error && <span className="fs-10 color-danger">{error}</span>}
         </>
     )
